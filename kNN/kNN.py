@@ -25,6 +25,9 @@ def classify0(inX, dataSet, labels, k):
     sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
     return sortedClassCount[0][0]
 
+
+#实例1：读文件-->画图分析数据-->归一化特征值（不同特征值权重一样，但数值范围不一样，归一化到0-1之间）
+#             -->测试-->运行
 def file2Matrix(filename):
     fr = open(filename)
     arrayLines = fr.readlines()
@@ -40,8 +43,48 @@ def file2Matrix(filename):
         index += 1
     return returnMat, classLabelVector
 
-def plotMap(datingDataMat):
+def plotMap(datingDataMat, datingLabels):
     fig = plt.figure()
     ax =  fig.add_subplot(111)
-    ax.scatter(datingDataMat[:, 1], datingDataMat[:, 2])
+    ax.scatter(datingDataMat[:, 1], datingDataMat[:, 2], 15.0*array(datingLabels), 15.0*array(datingLabels))
     plt.show()
+
+def autoNorm(dataSet):
+    minVals = dataSet.min(0)
+    maxVals = dataSet.max(0)
+    ranges = maxVals - minVals
+    
+    normDataSet = zeros(shape(dataSet))
+    normDataSet = dataSet - tile(minVals, (normDataSet.shape[0], 1))
+    normDataSet = normDataSet / tile(ranges, (normDataSet.shape[0], 1))
+    return normDataSet
+
+def datingClassTest():
+    hoRatio = 0.10
+    datingDataMat, datingLabels = file2Matrix('../book_sourceCode/Ch02/datingTestSet2.txt')
+    normMat = autoNorm(datingDataMat)
+
+    m = normMat.shape[0]
+    numTestVecs = int(m*hoRatio)
+
+    errorCount = 0.0
+    for i in range(numTestVecs):
+        classifyResult = classify0(datingDataMat[i, :], datingDataMat[numTestVecs:m, :], datingLabels[numTestVecs:m], 3)
+        print("the result is %d, the answer is %d" % (classifyResult, datingLabels[i]))
+        if classifyResult != datingLabels[i]:
+            errorCount += 1.0
+    print("the total error rate is %f" % (errorCount/float(numTestVecs)))
+
+def classifyPerson():
+    resultList = ['not at all', 'in small doses', 'in large doses']
+    percentTats = float(input("persentage of time spent playing video games?"))
+    ffMiles = float(input("frequent flier miles earned per year?"))
+    iceCream = float(input("liters of ice cream consumed per year?"))
+
+    datingDataMat, datingLabels = file2Matrix('../book_sourceCode/Ch02/datingTestSet2.txt')
+    normMat = autoNorm(datingDataMat)
+
+    inArr = array([ffMiles, percentTats, iceCream])
+    classifyResult = classify0((inArr-datingDataMat.min(0))/(datingDataMat.max(0)-datingDataMat.min(0)), normMat, datingLabels, 3)
+    print("you will probably like this person ", resultList[classifyResult-1])
+
