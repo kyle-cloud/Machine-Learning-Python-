@@ -61,7 +61,7 @@ def autoNorm(dataSet):
 
 def datingClassTest():
     hoRatio = 0.10
-    datingDataMat, datingLabels = file2Matrix('../book_sourceCode/Ch02/datingTestSet2.txt')
+    datingDataMat, datingLabels = filetoMatrix('../book_sourceCode/Ch02/datingTestSet2.txt')
     normMat = autoNorm(datingDataMat)
 
     m = normMat.shape[0]
@@ -81,7 +81,7 @@ def classifyPerson():
     ffMiles = float(input("frequent flier miles earned per year?"))
     iceCream = float(input("liters of ice cream consumed per year?"))
 
-    datingDataMat, datingLabels = file2Matrix('../book_sourceCode/Ch02/datingTestSet2.txt')
+    datingDataMat, datingLabels = filetoMatrix('../book_sourceCode/Ch02/datingTestSet2.txt')
     normMat = autoNorm(datingDataMat)
 
     inArr = array([ffMiles, percentTats, iceCream])
