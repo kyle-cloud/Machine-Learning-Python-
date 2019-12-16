@@ -26,9 +26,9 @@ def classify0(inX, dataSet, labels, k):
     return sortedClassCount[0][0]
 
 
-#实例1：读文件-->画图分析数据-->归一化特征值（不同特征值权重一样，但数值范围不一样，归一化到0-1之间）
+#实例1（分类约会对象）：读文件-->画图分析数据-->归一化特征值（不同特征值权重一样，但数值范围不一样，归一化到0-1之间）
 #             -->测试-->运行
-def file2Matrix(filename):
+def filetoMatrix(filename):
     fr = open(filename)
     arrayLines = fr.readlines()
     numberOfLines = len(arrayLines)
@@ -88,3 +88,37 @@ def classifyPerson():
     classifyResult = classify0((inArr-datingDataMat.min(0))/(datingDataMat.max(0)-datingDataMat.min(0)), normMat, datingLabels, 3)
     print("you will probably like this person ", resultList[classifyResult-1])
 
+
+#实例2（识别1-9图像）：
+def imgtoVector(filename):
+    returnVec = zeros((1, 1024))
+    fr = open(filename)
+    for i in range(32):
+        lineStr = fr.readline()
+        for j in range(32):
+            returnVec[0, 32*i+j] = int(lineStr[j])
+    return returnVec
+
+def handwritingClassTest():
+    trainingFileList = os.listdir('../book_sourceCode/Ch02/trainingDigits')
+    numberofFiles = len(trainingFileList)
+    hwLabels = []
+    trainingMat = zeros((numberofFiles, 1024))
+    for i in range(numberofFiles):
+        fileNameStr = trainingFileList[i]
+        classNumber = int(fileNameStr.split('_')[0])
+        hwLabels.append(classNumber)
+        trainingMat[i, :] = imgtoVector('../book_sourceCode/Ch02/trainingDigits/%s' % fileNameStr)
+    
+    errorCount = 0.0
+    testFileList = os.listdir('../book_sourceCode/Ch02/testDigits')
+    numberofTestFiles = len(testFileList)
+    for i in range(numberofTestFiles):
+        fileNameStr = testFileList[i]
+        classNumber = int(fileNameStr.split('_')[0])
+        returnTestVec = imgtoVector('../book_sourceCode/Ch02/testDigits/%s' % fileNameStr)
+        returnResult = classify0(returnTestVec, trainingMat, hwLabels, 3)
+        print("the classifier came back with %d, the real answer is %d" % (returnResult, classNumber))
+        if returnResult != classNumber:
+            errorCount += 1.0
+    print("the total error rate is %f" % (errorCount/float(numberofTestFiles)))
