@@ -65,21 +65,31 @@ def majorityCnt(classList):
     return sortedClass[0][0]
 
 def createTree(dataSet, labels):
+    subLabels = labels[:]
     classList = [example[-1] for example in dataSet]
     if classList.count(classList[0]) == len(classList):
         return classList[0]
     if len(dataSet[0]) == 1:
         return majorityCnt(classList)
-    
-    bestFeature = chooseBestFeatureToSplit(dataSet)
-    bestFeatureLabel = labels[bestFeature]
-    myTree = {bestFeatureLabel:{}}
-    
-    del(labels[bestFeature])
+    bestFeature = chooseBestFeatureToSplit(dataSet) #
+    bestFeatureLabel = labels[bestFeature]          #
+    myTree = {bestFeatureLabel:{}}                  #
+    del(subLabels[bestFeature])
     featureValues = [example[bestFeature] for example in dataSet]
     uniqueValues = set(featureValues)
     for value in uniqueValues:
-        subLabels = labels[:]
         subDataSet = splitDataSet(dataSet, bestFeature, value)
         myTree[bestFeatureLabel][value] = createTree(subDataSet, subLabels)
     return myTree
+
+def classify(inputTree, featureLables, testVec):
+    firstStr = list(inputTree.keys())[0]
+    secondDict = inputTree[firstStr]
+    featureIndex = featureLables.index(firstStr)
+    for key in secondDict.keys():
+        if testVec[featureIndex] == key:
+            if type(secondDict[key]).__name__ == 'dict':
+                classLabel = classify(secondDict[key], featureLables, testVec)
+            else:
+                classLabel = secondDict[key]
+    return classLabel
