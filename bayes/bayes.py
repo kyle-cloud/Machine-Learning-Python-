@@ -31,8 +31,8 @@ def trainNB0(trainMatrix, trainCategory):
     numTrainDocs = len(trainMatrix)
     numWords = len(trainMatrix[0])
     pAbusive = sum(trainCategory) / float(numTrainDocs)
-    p0Num = zeros(numWords); p1Num = zeros(numWords)
-    p0Denom = 0.0; p1Denom = 0.0
+    p0Num = ones(numWords); p1Num = ones(numWords)
+    p0Denom = 2.0; p1Denom = 2.0
     for i in range(numTrainDocs):
         if trainCategory[i] == 1:
             p1Num += trainMatrix[i]
