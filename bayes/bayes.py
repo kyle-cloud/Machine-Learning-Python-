@@ -40,6 +40,6 @@ def trainNB0(trainMatrix, trainCategory):
         else:
             p0Num += trainMatrix[i]
             p0Denom += sum(trainMatrix[i])
-    p1Vect = p1Num / p1Denom
-    p0Vect = p0Num / p0Denom
+    p1Vect = log(p1Num / p1Denom)
+    p0Vect = log(p0Num / p0Denom)
     return p0Vect, p1Vect, pAbusive
