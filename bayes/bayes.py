@@ -1,3 +1,4 @@
+import re
 from numpy import *
 
 def loadDataSet():
@@ -55,7 +56,7 @@ def trainNB0(trainMatrix, trainCategory):
 
 def classifyNB(vec2Classify, p0Vec, p1Vec, pClass1):
     p1 = sum(vec2Classify * p1Vec) + log(pClass1)
-    p0 = sum(vec2Classify * p0Vec) + log(pClass1)
+    p0 = sum(vec2Classify * p0Vec) + log(1.0 - pClass1)
     if p1 > p0:
         return 1
     else:
@@ -74,3 +75,40 @@ def testingNB():
     testEntry = ['stupid', 'garbage']
     thisDoc = array(setOfWords2Vec(myVocabList, testEntry))
     print(testEntry, 'classified as: ', classifyNB(thisDoc, p0Vec, p1Vec, pAb))
+
+####################
+def textPrase(bigString):
+    import re
+    rex = re.split(r'[!@#$%^&*()? \n~/]', bigString)
+    return [tok.lower() for tok in rex if len(tok)>2]
+
+def spamTest():
+    #解析文件
+    docList = []
+    classList = []
+    for i in range (1, 26):
+        wordList = textPrase(open('../book_sourceCode/Ch04/email/spam/%d.txt' % i).read())
+        docList.append(wordList)
+        classList.append(1)
+        wordList = textPrase(open('../book_sourceCode/Ch04/email/ham/%d.txt' % i).read())
+        docList.append(wordList)
+        classList.append(0)
+    vocabList = createVocabList(docList)
+    #随机抽取测试样例, 留下训练集
+    trainSet = list(range(50)); testSet = []
+    for i in range(10):
+        randIndex = int(random.uniform(0, len(trainSet)))
+        testSet.append(trainSet[randIndex])
+        del(trainSet[randIndex])
+    trainMat = []; trainClass = []
+    for docIndex in trainSet:
+        trainMat.append(setOfWords2Vec(vocabList, docList[docIndex]))
+        trainClass.append(classList[docIndex])
+    #开始训练
+    p0Vec, p1Vec, pAbu = trainNB0(array(trainMat), array(trainClass))
+    errorCount = 0
+    for docIndex in testSet:
+        wordVec = setOfWords2Vec(vocabList, docList[docIndex])
+        if classifyNB(array(wordVec), p0Vec, p1Vec, pAbu) != classList[docIndex]:
+            errorCount += 1
+    print("the error rate is: ", float(errorCount)/len(testSet))
