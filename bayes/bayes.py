@@ -1,4 +1,3 @@
-import re
 from numpy import *
 
 def loadDataSet():
@@ -102,13 +101,14 @@ def spamTest():
         del(trainSet[randIndex])
     trainMat = []; trainClass = []
     for docIndex in trainSet:
-        trainMat.append(setOfWords2Vec(vocabList, docList[docIndex]))
+        trainMat.append(bagOfWords2Vec(vocabList, docList[docIndex]))
         trainClass.append(classList[docIndex])
     #开始训练
     p0Vec, p1Vec, pAbu = trainNB0(array(trainMat), array(trainClass))
     errorCount = 0
     for docIndex in testSet:
-        wordVec = setOfWords2Vec(vocabList, docList[docIndex])
+        wordVec = bagOfWords2Vec(vocabList, docList[docIndex])
         if classifyNB(array(wordVec), p0Vec, p1Vec, pAbu) != classList[docIndex]:
             errorCount += 1
+            print(docList[docIndex])
     print("the error rate is: ", float(errorCount)/len(testSet))
