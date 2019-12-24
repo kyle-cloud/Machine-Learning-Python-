@@ -1,4 +1,5 @@
 from numpy import *
+import feedparser
 
 def loadDataSet():
     postingList = [
@@ -112,3 +113,79 @@ def spamTest():
             errorCount += 1
             print(docList[docIndex])
     print("the error rate is: ", float(errorCount)/len(testSet))
+
+##################实例2
+def calcMostFreq(vocabList, fullText):
+    import operator
+    freqDict = {}
+    for token in vocabList:
+        freqDict[token] = fullText.count(token)
+    sortedFrequent = sorted(freqDict.items(), key=operator.itemgetter(1), reverse=True)
+    return sortedFrequent[:30]
+
+def localWords(feed1, feed0):
+    import feedparser
+    docList = []; classList = []; fullText = []
+    minLen = min(len(feed0['entries']), len(feed1['entries']))
+    for i in range(minLen):
+        wordList = textPrase(feed1['entries'][i]['summary'])
+        docList.append(wordList)
+        fullText.extend(wordList)
+        classList.append(1)
+        wordList = textPrase(feed0['entries'][i]['summary'])
+        docList.append(wordList)
+        fullText.extend(wordList)
+        classList.append(0)
+    vocabList = createVocabList(docList)
+    print(vocabList)
+    #
+    top30Words = calcMostFreq(vocabList, fullText)
+    for pairW in top30Words:
+        if pairW[0] in vocabList:
+            vocabList.remove(pairW[0])
+    #
+    trainingSet = list(range(minLen*2)); testSet = []
+    for i in range(20):
+        randIndex = int(random.uniform(0, len(trainingSet)))
+        testSet.append(trainingSet[randIndex])
+        del(trainingSet[randIndex])
+    trainMat = []; trainClasses = []
+    for docIndex in trainingSet:
+        trainMat.append(bagOfWords2Vec(vocabList, docList[docIndex]))
+        trainClasses.append(classList[docIndex])
+    p0Vec, p1Vec, pSpam = trainNB0(array(trainMat), array(trainClasses))
+    errorCount = 0
+    for docIndex in testSet:
+        wordVector = bagOfWords2Vec(vocabList, docList[docIndex])
+        if classifyNB(array(wordVector), p0Vec, p1Vec, pSpam) != classList[docIndex]:
+            errorCount += 1
+    print('the error rate is', float(errorCount)/len(testSet))
+    return vocabList, p0Vec, p1Vec
+
+def getTopWords(ny, sf):
+    import operator
+    vocabList, p0Vec, p1Vec = localWords(ny, sf)
+    topNY = []; topSF = []
+    for i in range(len(p0Vec)):
+        if p0Vec[i] > -6.0 : topSF.append((vocabList[i], p0Vec[i]))
+        if p1Vec[i] > -6.0 : topNY.append((vocabList[i], p1Vec[i]))
+    sortedSF = sorted(topSF, key=lambda pair: pair[1], reverse=True)
+    print("SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**")
+    for item in sortedSF:
+        print(item[0])
+    sortedNY = sorted(topNY, key=lambda pair: pair[1], reverse=True)
+    print("NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**NY**")
+    for item in sortedNY:
+        print(item[0])
+
+
+
+
+
+
+
+
+
+
+
+
