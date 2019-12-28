@@ -83,13 +83,13 @@ def colicTest():
     frTest = open('../book_sourceCode/Ch05/horseColicTest.txt')
     trainingSet = []; trainingLabels = []
     for line in frTrain.readlines():
-        curLine = line.trip().split('\t')
+        curLine = line.strip().split('\t')
         lineArr = []
         for i in range(21):
             lineArr.append(float(curLine[i]))
         trainingSet.append(lineArr)
         trainingLabels.append(float(curLine[21]))
-    trainWeights = stocGradAscent1(array(lineArr), trainingLabels, 500)
+    trainWeights = stocGradAscent1(array(trainingSet), trainingLabels, 500)
     #test
     errorCount = 0; numTestVec = 0.0
     for line in frTest.readlines():
