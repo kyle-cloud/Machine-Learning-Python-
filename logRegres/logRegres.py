@@ -78,3 +78,28 @@ def classifyVector(inX, weights):
     else:
         return 0.0
 
+def colicTest():
+    frTrain = open('../book_sourceCode/Ch05/horseColicTraining.txt')
+    frTest = open('../book_sourceCode/Ch05/horseColicTest.txt')
+    trainingSet = []; trainingLabels = []
+    for line in frTrain.readlines():
+        curLine = line.trip().split('\t')
+        lineArr = []
+        for i in range(21):
+            lineArr.append(float(curLine[i]))
+        trainingSet.append(lineArr)
+        trainingLabels.append(float(curLine[21]))
+    trainWeights = stocGradAscent1(array(lineArr), trainingLabels, 500)
+    #test
+    errorCount = 0; numTestVec = 0.0
+    for line in frTest.readlines():
+        numTestVec += 1.0
+        curLine = line.strip().split('\t')
+        lineArr = []
+        for i in range(21):
+            lineArr.append(float(curLine[i]))
+        if int(classifyVector(lineArr, trainWeights)) != int(curLine[21]):
+            errorCount += 1
+    errorRate = float(errorCount) / numTestVec
+    print("the error rate is %f" % errorRate)
+    return errorRate
