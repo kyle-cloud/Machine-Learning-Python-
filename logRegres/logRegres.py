@@ -103,3 +103,9 @@ def colicTest():
     errorRate = float(errorCount) / numTestVec
     print("the error rate is %f" % errorRate)
     return errorRate
+
+def multiTest():
+    numTests = 10; errorSum = 0.0
+    for k in range(numTests):
+        errorSum += colicTest()
+    print("after %d iterations the average error rate is %f" % (numTests, errorSum/float(numTests)))
