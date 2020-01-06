@@ -1,3 +1,5 @@
+from numpy import*
+
 def loadDataSet(fileName):
     dataMat = []; labelMat = []
     fr = open("../book_sourceCode/testSet.txt")
@@ -19,3 +21,19 @@ def clipAlpha(aj, H, L):
     if L > aj:
         aj = L
     return aj
+
+def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
+    dataMatrix = mat(dataMatIn); labelMat = mat(classLabels).transpose()
+    m, n = shape(dataMatrix)
+    b = 0
+    alphas = mat(zeros((m, 1)))
+    iter = 0
+    while iter < maxIter:
+        alphaPairsChanged = 0
+        for i in range(m):
+            FXi = float(multiply(alphas, labelMat).T * (dataMatrix*dataMatrix[i, :].T)) + b
+            Ei = FXi - float(labelMat[i])
+            if (labelMat[i]*Ei < -toler and alphas[i] < C) or (labelMat[i]*Ei > toler and alphas[i] > 0):
+                
+
+    return b, alphas
