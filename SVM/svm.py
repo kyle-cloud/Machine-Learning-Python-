@@ -85,7 +85,7 @@ def selectJ(i, oS, Ei):
 
 def updateEk(oS, k):
 
-///////////
+///////////优化历程
 def innerL(i, oS):
 
 def smoP(dataMatIn, classLabels, C, toler, maxIter, kTup=('lin', 0)):
