@@ -84,3 +84,8 @@ def calcEk(oS, k):
 def selectJ(i, oS, Ei):
 
 def updateEk(oS, k):
+
+///////////
+def innerL(i, oS):
+
+def smoP(dataMatIn, classLabels, C, toler, maxIter, kTup=('lin', 0)):
