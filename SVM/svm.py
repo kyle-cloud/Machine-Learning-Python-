@@ -75,3 +75,12 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
             iter = 0
         print("iteration number: %d" % iter)         
     return b, alphas
+
+class optStruct:
+    def __init__(self, dataMatIn, classLabels, C, toler):
+
+def calcEk(oS, k):
+
+def selectJ(i, oS, Ei):
+
+def updateEk(oS, k):
