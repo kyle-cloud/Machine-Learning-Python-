@@ -89,3 +89,17 @@ def updateEk(oS, k):
 def innerL(i, oS):
 
 def smoP(dataMatIn, classLabels, C, toler, maxIter, kTup=('lin', 0)):
+
+def calcWs(alphas, dataArr, classLabels):
+
+///////核函数
+def kernelTrans(X, A, kTup):
+
+class optStruct:
+    def __init__(self, dataMatIn, classLabels, C, toler, kTup):
+
+deff testRbf(k1 = 1.3):
+
+
+//手写问题回顾
+def loadImages(dirName):
