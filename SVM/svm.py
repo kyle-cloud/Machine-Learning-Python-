@@ -1,14 +1,20 @@
 from numpy import*
 
-def loadDataSet(fileName):
+def loadDataSet():
     dataMat = []; labelMat = []
-    fr = open("../book_sourceCode/testSet.txt")
+    fr = open('../book_sourceCode/Ch06/testSet.txt')
     for line in fr.readlines():
-        lineArr = line.strip().split('/t')
+        lineArr = line.strip().split('\t')
         dataMat.append([float(lineArr[0]), float(lineArr[1])])
         labelMat.append(float(lineArr[2]))
     return dataMat, labelMat
 
+def myPrint(alphas, dataArr, labelArr):
+    for i in range(100):
+        if alphas[i] > 0.0:
+            print(dataArr[i], labelArr[i])
+    return
+    
 def selectJrand(i, m):
     j = i
     while j == i:
@@ -76,30 +82,31 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
         print("iteration number: %d" % iter)         
     return b, alphas
 
-class optStruct:
-    def __init__(self, dataMatIn, classLabels, C, toler):
 
-def calcEk(oS, k):
+# class optStruct:
+#     def __init__(self, dataMatIn, classLabels, C, toler):
 
-def selectJ(i, oS, Ei):
+# def calcEk(oS, k):
 
-def updateEk(oS, k):
+# def selectJ(i, oS, Ei):
 
-///////////优化历程
-def innerL(i, oS):
+# def updateEk(oS, k):
 
-def smoP(dataMatIn, classLabels, C, toler, maxIter, kTup=('lin', 0)):
+# ///////////优化历程
+# def innerL(i, oS):
 
-def calcWs(alphas, dataArr, classLabels):
+# def smoP(dataMatIn, classLabels, C, toler, maxIter, kTup=('lin', 0)):
 
-///////核函数
-def kernelTrans(X, A, kTup):
+# def calcWs(alphas, dataArr, classLabels):
 
-class optStruct:
-    def __init__(self, dataMatIn, classLabels, C, toler, kTup):
+# ///////核函数
+# def kernelTrans(X, A, kTup):
 
-deff testRbf(k1 = 1.3):
+# class optStruct:
+#     def __init__(self, dataMatIn, classLabels, C, toler, kTup):
+
+# deff testRbf(k1 = 1.3):
 
 
-//手写问题回顾
-def loadImages(dirName):
+# //手写问题回顾
+# def loadImages(dirName):
