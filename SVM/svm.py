@@ -83,8 +83,16 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
     return b, alphas
 
 
-# class optStruct:
-#     def __init__(self, dataMatIn, classLabels, C, toler):
+class optStruct:
+    def __init__(self, dataMatIn, classLabels, C, toler):
+        self.X = dataMatIn
+        self.labelMat = classLabels
+        self.C = C
+        self.tol = toler
+        self.m = shape(dataMatIn)[0]
+        self.alphas = mat(zeros((self.m, 1)))
+        self.b = 0
+        self.eCache = mat(zeros((self.m, 2)))
 
 # def calcEk(oS, k):
 
