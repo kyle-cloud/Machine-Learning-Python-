@@ -185,7 +185,13 @@ def smoP(dataMatIn, classLabels, C, toler, maxIter, kTup=('lin', 0)):
     return oS.b, oS.alphas
         
 
-# def calcWs(alphas, dataArr, classLabels):
+def calcWs(alphas, dataArr, classLabels):
+    X = mat(dataArr); labelMat = mat(classLabels).transpose()
+    m,n = shape(X)
+    w = zeros((n, 1))
+    for i in range(m):
+        w += multiply(alphas[i] * labelMat[i], X[i, :].T)
+    return w
 
 # ///////核函数
 # def kernelTrans(X, A, kTup):
