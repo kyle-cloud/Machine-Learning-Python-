@@ -94,9 +94,12 @@ class optStruct:
         self.b = 0
         self.eCache = mat(zeros((self.m, 2)))
 
-# def calcEk(oS, k):
+def calcEk(oS, k):
+    fXk = float(multiply(oS.alphas, oS.labelMat).T * (oS.X*os.X[k,:].T)) + oS.b
+    Ek = fXk - float(oS.labelMat[k])
+    return Ek
 
-# def selectJ(i, oS, Ei):
+def selectJ(i, oS, Ei):
 
 # def updateEk(oS, k):
 
