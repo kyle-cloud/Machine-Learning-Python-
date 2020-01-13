@@ -116,7 +116,9 @@ def selectJ(i, oS, Ei):
         Ej = calcEk(oS, j)
     return j, Ej
 
-# def updateEk(oS, k):
+def updateEk(oS, k):
+    Ek = calcEk(oS, k)
+    oS.eCache[k] = [1, Ek]
 
 # ///////////优化历程
 # def innerL(i, oS):
