@@ -95,7 +95,7 @@ class optStruct:
         self.eCache = mat(zeros((self.m, 2)))
 
 def calcEk(oS, k):
-    fXk = float(multiply(oS.alphas, oS.labelMat).T * (oS.X*os.X[k,:].T)) + oS.b
+    fXk = float(multiply(oS.alphas, oS.labelMat).T * (oS.X*oS.X[k,:].T)) + oS.b
     Ek = fXk - float(oS.labelMat[k])
     return Ek
 
@@ -109,7 +109,7 @@ def selectJ(i, oS, Ei):
             Ek = calcEk(oS, k)
             deltaE = abs(Ei - Ek)
             if deltaE > maxDeltaE:
-                maxK = k; maxDeltE = deltaE; Ej = Ek
+                maxK = k; maxDeltaE = deltaE; Ej = Ek
         return maxK, Ej
     else:
         j = selectJrand(i, oS.m)
@@ -127,17 +127,18 @@ def innerL(i, oS):
         ((oS.labelMat[i]*Ei > oS.tol) and (oS.alphas[i] > 0)):
         j, Ej = selectJ(i, oS, Ei)
         alphaIold = oS.alphas[i].copy(); alphaJold = oS.alphas[j].copy()
-        if (oS.labelMat[i] != oS.labelMat):
+        if (oS.labelMat[i] != oS.labelMat[j]):
             L = max(0, oS.alphas[j] - oS.alphas[i])
-            H = min(oS.C, oS.alphas[j] - oS.alphas[i])
+            H = min(oS.C, oS.C + oS.alphas[j] - oS.alphas[i])
         else:
-            L = max(0, oS.alphas[j] + oS.alphas[i] - os.C)
+            L = max(0, oS.alphas[j] + oS.alphas[i] - oS.C)
             H = min(oS.C, oS.alphas[j] + oS.alphas[i])
         if L == H: print("L == H"); return 0
         eta = 2.0 * oS.X[i, :] * oS.X[j, :].T - oS.X[i, :] * oS.X[i, :].T -\
              oS.X[j, :] * oS.X[j, :].T
         if eta >= 0: print("eta >= 0"); return 0
-        oS.alphas[j] -= oS.laeblMat[j] * (Ei - Ej) / eta
+        oS.alphas[j] -= oS.labelMat[j] * (Ei - Ej) / eta
+        oS.alphas[j] = clipAlpha(oS.alphas[j], H, L)
         updateEk(oS, j)
         if abs(oS.alphas[j] - alphaJold) < 0.00001:
             print("j not moving enough");
@@ -147,7 +148,7 @@ def innerL(i, oS):
         b1 = oS.b - Ei - oS.labelMat[i]*(oS.alphas[i]-alphaIold)*oS.X[i, :]*oS.X[i, :].T -\
             oS.labelMat[j]*(oS.alphas[j]-alphaJold)*oS.X[i, :]*oS.X[j, :].T
         b2 = oS.b - Ei - oS.labelMat[i]*(oS.alphas[i]-alphaIold)*oS.X[i, :]*oS.X[j, :].T -\
-            oS.labelMar[j]*(os.alphas[j]-alphaJold)*oS.X[j, :]*oS.X[j, :].T
+            oS.labelMat[j]*(oS.alphas[j]-alphaJold)*oS.X[j, :]*oS.X[j, :].T
         if oS.alphas[i] > 0 and oS.C > oS.alphas[i]:
             oS.b = b1
         elif oS.alphas[j] > 0 and oS.C > oS.alphas[j]:
@@ -159,7 +160,30 @@ def innerL(i, oS):
         return 0
 
 
-# def smoP(dataMatIn, classLabels, C, toler, maxIter, kTup=('lin', 0)):
+def smoP(dataMatIn, classLabels, C, toler, maxIter, kTup=('lin', 0)):
+    oS = optStruct(mat(dataMatIn), mat(classLabels).transpose(), C, toler)
+    iter = 0
+    entireSet = True; alphaPairsChanged = 0
+    while iter < maxIter and (alphaPairsChanged > 0 or entireSet):
+        alphaPairsChanged = 0
+        if entireSet:
+            for i in range(oS.m):
+                alphaPairsChanged += innerL(i, oS)
+                print("fullSet, iter: %d, i: %d, pairs changed %d" % (iter, i, alphaPairsChanged))
+            iter += 1
+        else:
+            nonBoundIs = nonzero((oS.alphas.A > 0) * (oS.alphas.A < C))[0]
+            for i in nonBoundIs:
+                alphaPairsChanged += innerL(i, oS)
+                print("non-bound, iter: %d, i: %d, pairs changed %d" % (iter, i, alphaPairsChanged))
+            iter += 1
+        if entireSet: 
+            entireSet = False
+        elif alphaPairsChanged == 0: 
+            entireSet = True
+        print("iteration number: %d" % iter)
+    return oS.b, oS.alphas
+        
 
 # def calcWs(alphas, dataArr, classLabels):
 
