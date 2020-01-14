@@ -84,7 +84,7 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
 
 
 class optStruct:
-    def __init__(self, dataMatIn, classLabels, C, toler):
+    def __init__(self, dataMatIn, classLabels, C, toler, kTup):
         self.X = dataMatIn
         self.labelMat = classLabels
         self.C = C
@@ -93,6 +93,8 @@ class optStruct:
         self.alphas = mat(zeros((self.m, 1)))
         self.b = 0
         self.eCache = mat(zeros((self.m, 2)))
+        for i in range(self.m):
+            self.K[:i] = kernelTrans(self.X, self.X[i,:], kTup)
 
 def calcEk(oS, k):
     fXk = float(multiply(oS.alphas, oS.labelMat).T * (oS.X*oS.X[k,:].T)) + oS.b
@@ -161,7 +163,7 @@ def innerL(i, oS):
 
 
 def smoP(dataMatIn, classLabels, C, toler, maxIter, kTup=('lin', 0)):
-    oS = optStruct(mat(dataMatIn), mat(classLabels).transpose(), C, toler)
+    oS = optStruct(mat(dataMatIn), mat(classLabels).transpose(), C, toler, kTup)
     iter = 0
     entireSet = True; alphaPairsChanged = 0
     while iter < maxIter and (alphaPairsChanged > 0 or entireSet):
