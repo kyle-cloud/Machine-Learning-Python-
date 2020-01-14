@@ -196,7 +196,19 @@ def calcWs(alphas, dataArr, classLabels):
     return w
 
 # ///////核函数
-# def kernelTrans(X, A, kTup):
+def kernelTrans(X, A, kTup):
+    m, n = shape(X)
+    K = mat(zeros((m, 1)))
+    if kTup[0] == 'lin':
+        K = X * A.T
+    elif kTup == 'rbf':
+        for j in range(m):
+            deltaRow = X[j, :] - A
+            K[j] = deltaRow * deltaRow.T
+        K = exp(K / (-1 * kTup[1]**2))
+    else:
+        raise NameError('Houston We Have a Problem -- That Kernel is not recognized')
+    return K
 
 # class optStruct:
 #     def __init__(self, dataMatIn, classLabels, C, toler, kTup):
