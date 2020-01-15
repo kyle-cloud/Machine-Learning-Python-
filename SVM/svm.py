@@ -163,6 +163,7 @@ def innerL(i, oS):
 
 
 def smoP(dataMatIn, classLabels, C, toler, maxIter, kTup=('lin', 0)):
+    print(kTup)
     oS = optStruct(mat(dataMatIn), mat(classLabels).transpose(), C, toler, kTup)
     iter = 0
     entireSet = True; alphaPairsChanged = 0
@@ -254,7 +255,7 @@ def imgtoVector(filename):
 def loadImages(dirName):
     from os import listdir
     hwlabels = []
-    trainingFileList = listdir(dirname)
+    trainingFileList = listdir(dirName)
     m = len(trainingFileList)
     trainingMat = zeros((m, 1024))
     for i in range(m):
@@ -269,4 +270,28 @@ def loadImages(dirName):
     return trainingMat, hwlabels
 
 def testDigits(kTup = ('rbf', 10)):
-    
+    dataArr, labelArr = loadImages('../book_sourceCode/Ch06/trainingDigits')
+    b, alphas = smoP(dataArr, labelArr, 200, 0.0001, 10000, kTup)
+    dataMat = mat(dataArr); labelMat = mat(labelArr).transpose()
+    svInd = nonzero(alphas.A>0)[0]
+    sVs = dataMat[svInd]
+    labelSV = labelMat[svInd]
+    print("there are %d Support Vectors" % shape(sVs)[0])
+    m, n = shape(dataMat)
+    errorCount = 0
+    for i in range(m):
+        kernelEval = kernelTrans(sVs, dataMat[i, :], kTup)
+        predict = kernelEval.T * multiply(labelSV, alphas[svInd]) + b
+        if sign(predict) != sign(labelArr[i]):
+            errorCount += 1
+    print("the training error rate is %f" % (float(errorCount)/m))
+    dataArr, labelArr = loadImages('../book_sourceCode/Ch06/testDigits')
+    errorCount = 0
+    dataMat = mat(dataArr); labelMat = mat(labelArr).transpose()
+    m, n = shape(dataMat)
+    for i in range(m):
+        kernelEval = kernelTrans(sVs, dataMat[i, :], kTup)
+        predict = kernelEval.T * multiply(labelSV, alphas[svInd]) + b
+        if sign(predict) != sign(labelArr[i]):
+            errorCount += 1
+    print("the test error rate is %f" % (float(errorCount)/m))
