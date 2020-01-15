@@ -242,4 +242,31 @@ def testRbf(k1 = 1.3):
 
 
 # //手写问题回顾
-# def loadImages(dirName):
+def imgtoVector(filename):
+    returnVec = zeros((1, 1024))
+    fr = open(filename)
+    for i in range(32):
+        lineStr = fr.readline()
+        for j in range(32):
+            returnVec[0, 32*i+j] = int(lineStr[j])
+    return returnVec
+
+def loadImages(dirName):
+    from os import listdir
+    hwlabels = []
+    trainingFileList = listdir(dirname)
+    m = len(trainingFileList)
+    trainingMat = zeros((m, 1024))
+    for i in range(m):
+        fileNameStr = trainingFileList[i]
+        fileStr = fileNameStr.split('.')[0]
+        classNumStr = int(fileStr.split('_')[0])
+        if classNumStr == 9:
+            hwlabels.append(-1)
+        else:
+            hwlabels.append(1)
+        trainingMat[i, :] = imgtoVector('%s/%s' % (dirName, fileNameStr))
+    return trainingMat, hwlabels
+
+def testDigits(kTup = ('rbf', 10)):
+    
