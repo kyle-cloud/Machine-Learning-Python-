@@ -1,3 +1,5 @@
+from numpy import *
+
 def loadSimData():
     dataMat = matrix([
         [1., 2.1],
