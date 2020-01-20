@@ -10,3 +10,8 @@ def loadSimData():
     ])
     classLabels = [1.0, 1.0, -1.0, -1.0, 1.0]
     return dataMat, classLabels
+
+def stumpClassify(dataMatrix, demen, threshVal, threshIneq):
+
+def buildStump(dataArr, classLabells, D):
+
