@@ -13,6 +13,6 @@ def loadSimData():
 
 def stumpClassify(dataMatrix, demen, threshVal, threshIneq):
     retArray = ones((shape(dataMatrix)[0], 1))
-
+    今天太der了
 def buildStump(dataArr, classLabells, D):
 
