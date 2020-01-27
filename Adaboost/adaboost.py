@@ -15,5 +15,6 @@ def stumpClassify(dataMatrix, demen, threshVal, threshIneq):
     retArray = ones((shape(dataMatrix)[0], 1))
     今天太der了\
         移动要好好学英语啊
+        明天开始以前的工作作息
 def buildStump(dataArr, classLabells, D):
 
