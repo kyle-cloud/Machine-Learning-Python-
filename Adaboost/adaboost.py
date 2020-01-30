@@ -17,5 +17,6 @@ def stumpClassify(dataMatrix, demen, threshVal, threshIneq):
         移动要好好学英语啊
         明天开始以前的工作作息
         明天大姐姐夫还有大姨回去了，嗯，今天实在不想写。不过明天就正式开始魔鬼学习了
+        adaboost 看来是多个分类器的意思
 def buildStump(dataArr, classLabells, D):
 
