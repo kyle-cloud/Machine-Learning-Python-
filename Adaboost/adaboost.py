@@ -11,12 +11,35 @@ def loadSimData():
     classLabels = [1.0, 1.0, -1.0, -1.0, 1.0]
     return dataMat, classLabels
 
-def stumpClassify(dataMatrix, demen, threshVal, threshIneq):
+def stumpClassify(dataMatrix, dimen, threshVal, threshIneq):
     retArray = ones((shape(dataMatrix)[0], 1))
-    今天太der了\
-        移动要好好学英语啊
-        明天开始以前的工作作息
-        明天大姐姐夫还有大姨回去了，嗯，今天实在不想写。不过明天就正式开始魔鬼学习了
-        adaboost 看来是多个分类器的意思
-def buildStump(dataArr, classLabells, D):
+    if threshIneq == 'lt':
+        retArray[dataMatrix[:, dimen] <= threshVal] = -1.0
+    else:
+        retArray[dataMatrix[:, dimen] > threshVal] = -1.0
+    return retArray
 
+def buildStump(dataArr, classLabels, D):
+    dataMatrix = mat(dataArr); labelMat = mat(classLabels).T
+    m, n = shape(dataMatrix)
+    numSteps = 10.0; bestStump = {}; bestClaEst = mat(zeros((m, 1)))
+    minError = inf
+    for i in range(n):
+        rangeMin = dataMatrix[:, i].min()
+        rangeMax = dataMatrix[:, i].max()
+        stepSize = (rangeMax - rangeMin) / numSteps
+        for j in range(-1, int(numSteps) + 1):
+            for inequal in ['lt', 'gt']:
+                threshVal = (rangeMin + float(j) * stepSize)
+                predictedVal = stumpClassify(dataMatrix, i, threshVal, inequal)
+                errArr = max(ones((m, 1)))
+                errArr[predictedVal == labelMat] = 0
+                weightedError = D.T * errArr
+                print("split: dim %d, thresh %.2f, thresh inequal: %s, the weighted error is %.3f" % (i, threshVal, inequal, weightedError))
+                if weightedError < minError:
+                    minError = weightedError
+                    bestClaEst = predictedVal.copy()
+                    bestStump['dim'] = i
+                    bestStump['thresh'] = threshVal
+                    bestStump['ineq'] = inequal
+    return bestStump, minError, bestClaEst
