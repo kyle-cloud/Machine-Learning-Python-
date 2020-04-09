@@ -1,4 +1,4 @@
-from numpy import *
+from numpy import *;
 
 def loadSimData():
     dataMat = matrix([
@@ -32,7 +32,7 @@ def buildStump(dataArr, classLabels, D):
             for inequal in ['lt', 'gt']:
                 threshVal = (rangeMin + float(j) * stepSize)
                 predictedVal = stumpClassify(dataMatrix, i, threshVal, inequal)
-                errArr = max(ones((m, 1)))
+                errArr = mat(ones((m, 1)))
                 errArr[predictedVal == labelMat] = 0
                 weightedError = D.T * errArr
                 print("split: dim %d, thresh %.2f, thresh inequal: %s, the weighted error is %.3f" % (i, threshVal, inequal, weightedError))
@@ -43,3 +43,4 @@ def buildStump(dataArr, classLabels, D):
                     bestStump['thresh'] = threshVal
                     bestStump['ineq'] = inequal
     return bestStump, minError, bestClaEst
+
